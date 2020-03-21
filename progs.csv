@@ -14,7 +14,6 @@
 ,ffmpeg,"can record and splice video and audio on the command line."
 ,firefox,"the main browser."
 ,gimp,"image manipulation."
-,git,"source versioning.",
 ,htop,"cool system monitor."
 ,network-manager-applet,"network manager applet for status bar."
 ,nm-connection-editor,"gtk network manager."

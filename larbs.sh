@@ -1,5 +1,5 @@
 #!/bin/sh
-# Luke's Auto Rice Boostrapping Script (LARBS)
+# Luke's Auto Rice Boostrapping Script (Script)
 # by Luke Smith <luke@lukesmith.xyz>
 # License: GNU GPLv3
 
@@ -15,31 +15,18 @@ while getopts ":a:r:b:p:h" o; do case "${o}" in
 esac done
 
 [ -z "$dotfilesrepo" ] && dotfilesrepo="https://github.com/dixiedream/dotfiles.git"
-[ -z "$progsfile" ] && progsfile="https://raw.githubusercontent.com/dixiedream/LARBS/master/progs.csv"
+[ -z "$progsfile" ] && progsfile="https://raw.githubusercontent.com/dixiedream/Script/master/progs.csv"
 [ -z "$aurhelper" ] && aurhelper="yay"
 [ -z "$repobranch" ] && repobranch="master"
 
 ### FUNCTIONS ###
-
-if type xbps-install >/dev/null 2>&1; then
-	installpkg(){ xbps-install -y "$1" >/dev/null 2>&1 ;}
-	grepseq="\"^[PGV]*,\""
-elif type apt >/dev/null 2>&1; then
-	installpkg(){ apt-get install -y "$1" >/dev/null 2>&1 ;}
-	grepseq="\"^[PGU]*,\""
-else
-	installpkg(){ pacman --noconfirm --needed -S "$1" >/dev/null 2>&1 ;}
-	grepseq="\"^[PGA]*,\""
-fi
+installpkg(){ pacman --noconfirm --needed -S "$1" >/dev/null 2>&1 ;}
+grepseq="\"^[PGA]*,\""
 
 error() { clear; printf "ERROR:\\n%s\\n" "$1"; exit;}
 
 welcomemsg() { \
-	dialog --title "Welcome!" --msgbox "Welcome to Luke's Auto-Rice Bootstrapping Script!\\n\\nThis script will automatically install a fully-featured Linux desktop, which I use as my main machine.\\n\\n-Luke" 10 60
-	}
-
-selectdotfiles() { \
-	edition="$(dialog --title "Select LARBS version." --menu "Select which version of LARBS you wish to have as default:" 10 70 2 i3 "The classic version of LARBS using i3." dwm "The version of LARBS using suckless's dwm." custom "If you are supplying commandline options for LARBS." 3>&1 1>&2 2>&3 3>&1)" || error "User exited."
+	dialog --title "Welcome!" --msgbox "Welcome to the Bootstrapping Script!" 10 60
 	}
 
 getuserandpass() { \
@@ -58,11 +45,11 @@ getuserandpass() { \
 
 usercheck() { \
 	! (id -u "$name" >/dev/null) 2>&1 ||
-	dialog --colors --title "WARNING!" --yes-label "CONTINUE" --no-label "No wait..." --yesno "The user \`$name\` already exists on this system. LARBS can install for a user already existing, but it will \\Zboverwrite\\Zn any conflicting settings/dotfiles on the user account.\\n\\nLARBS will \\Zbnot\\Zn overwrite your user files, documents, videos, etc., so don't worry about that, but only click <CONTINUE> if you don't mind your settings being overwritten.\\n\\nNote also that LARBS will change $name's password to the one you just gave." 14 70
+	dialog --colors --title "WARNING!" --yes-label "CONTINUE" --no-label "No wait..." --yesno "The user \`$name\` already exists on this system. The script can install for a user already existing, but it will \\Zboverwrite\\Zn any conflicting settings/dotfiles on the user account.\\n\\nScript will \\Zbnot\\Zn overwrite your user files, documents, videos, etc., so don't worry about that, but only click <CONTINUE> if you don't mind your settings being overwritten.\\n\\nNote also that Script will change $name's password to the one you just gave." 14 70
 	}
 
 preinstallmsg() { \
-	dialog --title "Let's get this party started!" --yes-label "Let's go!" --no-label "No, nevermind!" --yesno "The rest of the installation will now be totally automated, so you can sit back and relax.\\n\\nIt will take some time, but when done, you can relax even more with your complete system.\\n\\nNow just press <Let's go!> and the system will begin installation!" 13 60 || { clear; exit; }
+	dialog --title "Let's get this party started!" --yes-label "Let's go!" --no-label "No, nevermind!" --yesno "The rest of the installation will now be totally automated, sit back and relax.\\n\\nIt will take some time.\\n\\nNow just press <Let's go!> and the system will begin installation!" 13 60 || { clear; exit; }
 	}
 
 adduserandpass() { \
@@ -79,8 +66,8 @@ refreshkeys() { \
 	}
 
 newperms() { # Set special sudoers settings for install (or after).
-	sed -i "/#LARBS/d" /etc/sudoers
-	echo "$* #LARBS" >> /etc/sudoers ;}
+	sed -i "/#Script/d" /etc/sudoers
+	echo "$* #Script" >> /etc/sudoers ;}
 
 manualinstall() { # Installs $1 manually if not installed. Used only for AUR helper here.
 	[ -f "/usr/bin/$1" ] || (
@@ -94,13 +81,13 @@ manualinstall() { # Installs $1 manually if not installed. Used only for AUR hel
 	cd /tmp || return) ;}
 
 maininstall() { # Installs all needed programs from main repo.
-	dialog --title "LARBS Installation" --infobox "Installing \`$1\` ($n of $total). $1 $2" 5 70
+	dialog --title "Script Installation" --infobox "Installing \`$1\` ($n of $total). $1 $2" 5 70
 	installpkg "$1"
 	}
 
 gitmakeinstall() {
 	dir=$(mktemp -d)
-	dialog --title "LARBS Installation" --infobox "Installing \`$(basename "$1")\` ($n of $total) via \`git\` and \`make\`. $(basename "$1") $2" 5 70
+	dialog --title "Script Installation" --infobox "Installing \`$(basename "$1")\` ($n of $total) via \`git\` and \`make\`. $(basename "$1") $2" 5 70
 	git clone --depth 1 "$1" "$dir" >/dev/null 2>&1
 	cd "$dir" || exit
 	make >/dev/null 2>&1
@@ -108,13 +95,13 @@ gitmakeinstall() {
 	cd /tmp || return ;}
 
 aurinstall() { \
-	dialog --title "LARBS Installation" --infobox "Installing \`$1\` ($n of $total) from the AUR. $1 $2" 5 70
+	dialog --title "Script Installation" --infobox "Installing \`$1\` ($n of $total) from the AUR. $1 $2" 5 70
 	echo "$aurinstalled" | grep "^$1$" >/dev/null 2>&1 && return
 	sudo -u "$name" $aurhelper -S --noconfirm "$1" >/dev/null 2>&1
 	}
 
 pipinstall() { \
-	dialog --title "LARBS Installation" --infobox "Installing the Python package \`$1\` ($n of $total). $1 $2" 5 70
+	dialog --title "Script Installation" --infobox "Installing the Python package \`$1\` ($n of $total). $1 $2" 5 70
 	command -v pip || installpkg python-pip >/dev/null 2>&1
 	yes | pip install "$1"
 	}
@@ -150,8 +137,8 @@ systembeepoff() { dialog --infobox "Getting rid of that retarded error beep soun
 
 finalize(){ \
 	dialog --infobox "Preparing welcome message..." 4 50
-	echo "exec_always --no-startup-id notify-send -i ~/.local/share/larbs/larbs.png 'Welcome to LARBS:' 'Press Super+F1 for the manual.' -t 10000"  >> "/home/$name/.config/i3/config"
-	dialog --title "All done!" --msgbox "Congrats! Provided there were no hidden errors, the script completed successfully and all the programs and configuration files should be in place.\\n\\nTo run the new graphical environment, log out and log back in as your new user, then run the command \"startx\" to start the graphical environment (it will start automatically in tty1).\\n\\n.t Luke" 12 80
+	echo "exec_always --no-startup-id notify-send -i ~/.local/share/Script/Script.png 'Welcome:' 'Press Super+S for the manual.' -t 10000"  >> "/home/$name/.config/i3/config"
+	dialog --title "All done!" --msgbox "Congrats! Provided there were no hidden errors, the script completed successfully and all the programs and configuration files should be in place.\\n\\nTo run the new graphical environment, log out and log back in as your new user, then run the command \"startx\" to start the graphical environment (it will start automatically in tty1).\\n\\n.t" 12 80
 	}
 
 ### THE ACTUAL SCRIPT ###
@@ -163,7 +150,6 @@ installpkg dialog ||  error "Are you sure you're running this as the root user a
 
 # Welcome user and pick dotfiles.
 welcomemsg || error "User exited."
-selectdotfiles || error "User exited."
 
 # Get and verify username and password.
 getuserandpass || error "User exited."
@@ -181,7 +167,7 @@ adduserandpass || error "Error adding username and/or password."
 # Refresh Arch keyrings.
 # refreshkeys || error "Error automatically refreshing Arch keyring. Consider doing so manually."
 
-dialog --title "LARBS Installation" --infobox "Installing \`basedevel\` and \`git\` for installing other software." 5 70
+dialog --title "Script Installation" --infobox "Installing \`basedevel\` and \`git\` for installing other software." 5 70
 installpkg base-devel
 installpkg git
 [ -f /etc/sudoers.pacnew ] && cp /etc/sudoers.pacnew /etc/sudoers # Just in case
@@ -207,24 +193,17 @@ installationloop
 
 # Install the dotfiles in the user's home directory
 putgitrepo "$dotfilesrepo" "/home/$name" "$repobranch"
-rm -f "/home/$name/README.md" "/home/$name/LICENSE"
 
 # Most important command! Get rid of the beep!
 systembeepoff
 
 # This line, overwriting the `newperms` command above will allow the user to run
 # serveral important commands, `shutdown`, `reboot`, updating, etc. without a password.
-newperms "%wheel ALL=(ALL) ALL #LARBS
-%wheel ALL=(ALL) NOPASSWD: /usr/bin/shutdown,/usr/bin/reboot,/usr/bin/systemctl suspend,/usr/bin/wifi-menu,/usr/bin/mount,/usr/bin/umount,/usr/bin/pacman -Syu,/usr/bin/pacman -Syyu,/usr/bin/packer -Syu,/usr/bin/packer -Syyu,/usr/bin/systemctl restart NetworkManager,/usr/bin/rc-service NetworkManager restart,/usr/bin/pacman -Syyu --noconfirm,/usr/bin/loadkeys,/usr/bin/yay,/usr/bin/pacman -Syyuw --noconfirm"
-
-# Make zsh the default shell for the user
-sed -i "s/^$name:\(.*\):\/bin\/.*/$name:\1:\/bin\/zsh/" /etc/passwd
+newperms "%wheel ALL=(ALL) ALL #Script
+%wheel ALL=(ALL) NOPASSWD: /usr/bin/wifi-menu,/usr/bin/mount,/usr/bin/umount,/usr/bin/systemctl restart NetworkManager,/usr/bin/rc-service NetworkManager restart,/usr/bin/loadkeys,/usr/bin/yay"
 
 # dbus UUID must be generated for Artix runit
 dbus-uuidgen > /var/lib/dbus/machine-id
-
-# Let LARBS know the WM it's supposed to run.
-echo "$edition" > "/home/$name/.local/share/larbs/wm"; chown "$name:wheel" "/home/$name/.local/share/larbs/wm"
 
 # Last message! Install complete!
 finalize
