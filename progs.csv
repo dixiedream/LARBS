@@ -43,4 +43,4 @@ A,brave-bin,"is an elegant browser with built-in adblocking, tor and other featu
 A,urxvt-resize-font-git,"resize plugin for terminal emulator."
 
 # Compilation needing packages
-G,https://github.com/lukesmithxyz/st.git,"is my custom build of suckless's terminal emulator."
+G,https://github.com/lukesmithxyz/st.git,"luke's custom build of suckless's terminal emulator."

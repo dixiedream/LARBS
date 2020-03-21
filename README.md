@@ -72,5 +72,4 @@ user to use `sudo` without a password (so the user won't be prompted for a
 password multiple times in installation). This is done ad-hocly, but
 effectively with the `newperms` function. At the end of installation,
 `newperms` removes those settings, giving the user the ability to run only
-several basic sudo commands without a password (`shutdown`, `reboot`,
-`pacman -Syu`).
+several basic sudo commands without a password.
