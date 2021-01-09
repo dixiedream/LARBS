@@ -198,12 +198,9 @@ putgitrepo "$dotfilesrepo" "/home/$name" "$repobranch"
 systembeepoff
 
 # This line, overwriting the `newperms` command above will allow the user to run
-# serveral important commands, `shutdown`, `reboot`, updating, etc. without a password.
+# several important commands, `shutdown`, `reboot`, updating, etc. without a password.
 newperms "%wheel ALL=(ALL) ALL #Script
-%wheel ALL=(ALL) NOPASSWD: /usr/bin/wifi-menu,/usr/bin/mount,/usr/bin/umount,/usr/bin/systemctl restart NetworkManager,/usr/bin/rc-service NetworkManager restart,/usr/bin/loadkeys,/usr/bin/yay"
-
-# dbus UUID must be generated for Artix runit
-dbus-uuidgen > /var/lib/dbus/machine-id
+%wheel ALL=(ALL) NOPASSWD: /usr/bin/mount,/usr/bin/umount"
 
 # Last message! Install complete!
 finalize
