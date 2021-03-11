@@ -1,23 +1,19 @@
 #!/bin/sh
-# Luke's Auto Rice Boostrapping Script (Script)
-# by Luke Smith <luke@lukesmith.xyz>
-# License: GNU GPLv3
 
 ### OPTIONS AND VARIABLES ###
 
 while getopts ":a:r:b:p:h" o; do case "${o}" in
-	h) printf "Optional arguments for custom use:\\n  -r: Dotfiles repository (local file or url)\\n  -p: Dependencies and programs csv (local file or url)\\n  -a: AUR helper (must have pacman-like syntax)\\n  -h: Show this message\\n" && exit ;;
+	h) printf "Optional arguments for custom use:\\n  -r: Dotfiles repository (local file or url)\\n  -p: Dependencies and programs csv (local file or url)\\n -h: Show this message\\n" && exit ;;
 	r) dotfilesrepo=${OPTARG} && git ls-remote "$dotfilesrepo" || exit ;;
 	b) repobranch=${OPTARG} ;;
 	p) progsfile=${OPTARG} ;;
-	a) aurhelper=${OPTARG} ;;
 	*) printf "Invalid option: -%s\\n" "$OPTARG" && exit ;;
 esac done
 
 [ -z "$dotfilesrepo" ] && dotfilesrepo="https://github.com/dixiedream/dotfiles.git"
 [ -z "$progsfile" ] && progsfile="https://raw.githubusercontent.com/dixiedream/Script/master/progs.csv"
-[ -z "$aurhelper" ] && aurhelper="yay"
 [ -z "$repobranch" ] && repobranch="master"
+aurhelper="yay"
 
 ### FUNCTIONS ###
 installpkg(){ pacman --noconfirm --needed -S "$1" >/dev/null 2>&1 ;}
